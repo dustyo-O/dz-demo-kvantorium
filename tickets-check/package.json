@@ -1,0 +1,17 @@
+{
+  "name": "tickets-check",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mini-css": "^1.0.3",
+    "mini.css": "^3.0.1",
+    "qr-code-scanner": "^1.0.8",
+    "qr-scanner": "^1.2.0"
+  }
+}

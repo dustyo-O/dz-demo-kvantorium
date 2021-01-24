@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      text-align: center;
+    }
+    .video-cont {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      pointer-events: none;
+    }
+    .video {
+      top: 30px;
+      max-width: 100vw;
+      max-height: 50vh;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+  <link rel="stylesheet" href="node_modules/mini.css/dist/mini-default.min.css"/>
+
+</head>
+<body>
+  <div class="video-cont">
+    <h2 class="checking hidden">Проверка</h2>
+    <video class="video"></video>
+  </div>
+  <button class="start">Start</button>
+  <script type="module">
+    import QrScanner from './node_modules/qr-scanner/qr-scanner.min.js';
+
+    const videoElem = document.querySelector('.video');
+    const checking = document.querySelector('.checking');
+
+    // do something with QrScanner
+
+    const qrScanner = new QrScanner(videoElem, result => {
+      qrScanner.stop();
+      videoElem.classList.add('hidden');
+      checking.classList.remove('hidden');
+
+      fetch(`http://localhost:3000/ticket/check/` + result)
+          .then(response => response.json())
+          .then(result => {
+            document.body.style.backgroundColor =
+              result.status === 'valid' ? 'lightgreen' : 'lightcoral';
+
+            checking.innerHTML = result.status === 'valid' ? 'проходите' : 'билет недействителен';
+
+            setTimeout(function() {
+              document.body.style.backgroundColor = 'white';
+              checking.innerHTML = 'Следующий!';
+            }, 2000)
+          })
+
+    });
+
+    document.querySelector('.start').addEventListener('click', function() {
+      videoElem.classList.remove('hidden');
+      checking.classList.add('hidden');
+
+      qrScanner.start();
+    });
+  </script>
+</body>
+</html>

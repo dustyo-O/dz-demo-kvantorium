@@ -1,0 +1,48 @@
+<html>
+<head>
+  <link rel="stylesheet" href="node_modules/mini.css/dist/mini-default.min.css"/>
+
+  <script src="https://use.fontawesome.com/d0ee098651.js"></script>
+
+</head>
+<body>
+  <script type="text/javascript" src="node_modules/qrcode-generator/qrcode.js"></script>
+  <div class="placeholder"></div>
+
+  <button class="get"><i class="fa fa-ticket"></i> Получи билет</button>
+  <script>
+    function generateId() {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    const getButton = document.querySelector('.get');
+    getButton.addEventListener('click', function() {
+      getButton.disabled = true;
+      getButton.innerText = 'Подождите...';
+
+      setTimeout(function() {
+        const ticket = generateId();
+
+        fetch('http://localhost:3000/ticket/put/' + ticket)
+          .then(response => response.json())
+          .then(result => {
+            if (result.status !== 'ok') return;
+
+            const typeNumber = 10;
+            const errorCorrectionLevel = 'L';
+            var qr = qrcode(typeNumber, errorCorrectionLevel);
+
+            qr.addData(ticket);
+
+            qr.make();
+            document.querySelector('.placeholder').innerHTML = qr.createImgTag();
+
+            getButton.remove();
+          });
+
+      }, 2000);
+
+    });
+  </script>
+</body>
+</html>
